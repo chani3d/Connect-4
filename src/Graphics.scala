@@ -1,6 +1,6 @@
 import hevs.graphics.FunGraphics
 import java.awt.Color
-
+import java.awt.event.{MouseAdapter, MouseEvent}
 
 class Graphics {
 
@@ -21,12 +21,16 @@ class Graphics {
     return board
   }
 
-
-
-
-
-
 }
 
 
 
+
+
+
+
+  // Draw simple shapes
+//  s.setColor(Color.black)
+//  s.drawCircle(100, 100, 10)
+//  s.setColor(Color.blue)
+//  s.drawFillRect(20, 20, 10, 10)
