@@ -6,7 +6,7 @@ import java.awt.Color
 class GUI_mode {
 
   def createBoard(r: Int, c: Int, w: FunGraphics): Array[Array[Int]] = {
-   //Visual stuff
+    //Visual stuff
     val board: Array[Array[Int]] = Array.ofDim[Int](r, c)
     val notTooBrightYellow: Color = new Color(230,230,0)
 
@@ -85,6 +85,3 @@ class GUI_mode {
 
   }
 }
-
-
-

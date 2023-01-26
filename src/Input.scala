@@ -17,6 +17,7 @@ object Input {
 
   /**
    * Reads a valid char value from the console.
+   *
    * @return The typed char
    */
   def readChar(): Char = {
@@ -38,6 +39,7 @@ object Input {
 
   /**
    * Reads a String from the console.
+   *
    * @return The typed string
    */
   def readString(): String = {
@@ -54,6 +56,7 @@ object Input {
 
   /**
    * Reads a valid integer value from the console.
+   *
    * @return The typed integer value
    * @see Int
    */
@@ -78,6 +81,7 @@ object Input {
 
   /**
    * Reads a valid double value from the console.
+   *
    * @return The typed double value
    * @see Double
    */
@@ -100,6 +104,7 @@ object Input {
 
   /**
    * Reads a valid boolean value from the console.
+   *
    * @return the value true if the typed value is true, false otherwise.
    */
   def readBoolean(): Boolean = {
@@ -137,5 +142,4 @@ object Input {
     }
     res
   }
-
 }

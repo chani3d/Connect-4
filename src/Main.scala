@@ -1,7 +1,5 @@
 import Input.readInt
 import hevs.graphics.FunGraphics
-import hevs.graphics.utils.GraphicsBitmap
-
 import java.awt.Color
 import java.awt.event.{KeyAdapter, KeyEvent}
 
@@ -88,51 +86,51 @@ object Main extends App {
 
       var temp: Int = 0
 
-        if (turn % 2 == 0) {
+      if (turn % 2 == 0) {
+        temp = readInt() - 1
+        while (temp < 0 || temp > 6) {
+          println(s"Not a valid number, try again $player !")
           temp = readInt() - 1
-          while (temp < 0 || temp > 6) {
-            println(s"Not a valid number, try again $player !")
-            temp = readInt() - 1
-          }
-          column = temp
-
-          if (checkPos(board, column)) {
-            row = nextPos(board, column)
-            new Console_mode dropPiece(board, row, column, 1)
-            player = "Player 2"
-
-            if (checkWin(board, 1, r, c)) {
-              player = "Player 1"
-              println(s"$player wins !")
-              gameOver = true
-            }
-          }
         }
+        column = temp
 
-        else {
-          temp = readInt() - 1
+        if (checkPos(board, column)) {
+          row = nextPos(board, column)
+          new Console_mode dropPiece(board, row, column, 1)
+          player = "Player 2"
 
-          while (temp < 0 || temp > 6) {
-            println(s"Not a valid number, try again $player !")
-            temp = readInt() - 1
-          }
-          column = temp
-          if (checkPos(board, column)) {
-            row = nextPos(board, column)
-            new Console_mode dropPiece(board, row, column, 2)
+          if (checkWin(board, 1, r, c)) {
             player = "Player 1"
-
-            if (checkWin(board, 2, r, c)) {
-              player = "Player 2"
-              println(s"$player wins !")
-              gameOver = true
-            }
+            println(s"$player wins !")
+            gameOver = true
           }
         }
-        if (!gameOver) {
-          turn += 1
-          new Console_mode menu(board, turn, player)
+      }
+
+      else {
+        temp = readInt() - 1
+
+        while (temp < 0 || temp > 6) {
+          println(s"Not a valid number, try again $player !")
+          temp = readInt() - 1
         }
+        column = temp
+        if (checkPos(board, column)) {
+          row = nextPos(board, column)
+          new Console_mode dropPiece(board, row, column, 2)
+          player = "Player 1"
+
+          if (checkWin(board, 2, r, c)) {
+            player = "Player 2"
+            println(s"$player wins !")
+            gameOver = true
+          }
+        }
+      }
+      if (!gameOver) {
+        turn += 1
+        new Console_mode menu(board, turn, player)
+      }
     }
   }
 

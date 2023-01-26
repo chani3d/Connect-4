@@ -16,5 +16,4 @@ class Console_mode {
   def dropPiece(board: Array[Array[Int]], row: Int, column: Int, piece: Int): Unit = {
     board(row)(column) = piece
   }
-
 }
