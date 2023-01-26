@@ -1,20 +1,11 @@
 import Input.readInt
 import hevs.graphics.FunGraphics
+import hevs.graphics.utils.GraphicsBitmap
 
-
-import java.awt.event.{MouseAdapter, MouseEvent}
-
-
+import java.awt.Color
+import java.awt.event.{KeyAdapter, KeyEvent}
 
 object Main extends App {
-
-  def menu(board: Array[Array[Int]], turn: Int, player: String): Unit = {
-    println("           Connect 4          ")
-    println(s"    Turn n°: $turn, $player\n")
-    println(" +---+---+---+---+---+---+---+")
-    println(board.map(_.mkString(" | ", " | ", " | ")).mkString("\n +---+---+---+---+---+---+---+ \n"))
-    println(" +---+---+---+---+---+---+---+")
-  }
 
   def checkPos(board: Array[Array[Int]], column: Int): Boolean = {
     return board(0)(column) == 0
@@ -28,10 +19,6 @@ object Main extends App {
       }
     }
     return a
-  }
-
-  def dropPiece(board: Array[Array[Int]], row: Int, column: Int, piece: Int): Unit = {
-    board(row)(column) = piece
   }
 
   def checkWin(board: Array[Array[Int]], piece: Int, r: Int, c: Int): Boolean = {
@@ -77,81 +64,194 @@ object Main extends App {
     return check
   }
 
-  def checkPosx(posx: Int, newposx: Int): Unit =  {
-
-  }
-
-  val w = new FunGraphics(700, 700, "Connect 4, 2023 By SJCG & DR - ISC1")
   val r: Int = 6
   val c: Int = 7
-  val board: Array[Array[Int]] = new Graphics createBoard(r, c, w)
   var gameOver: Boolean = false
   var turn: Int = 0
-  var column: Int = 0
-  var columnTemp: Int = 1
   var row: Int = 0
+  var column: Int = 0
   var player: String = "Player 1"
-  var posx = 0
-  var posy = 0
+  var ok: Boolean = false
+  var console_OR_graphics_mode: Boolean = false
 
-  //Mouse stuff
+  // Change console_OR_graphics_mode to true if you want to play in console mode
 
-  w.addMouseListener(new MouseAdapter() {
-    override def mouseClicked(e: MouseEvent): Unit = {
-      val event: MouseEvent = e
+  if (console_OR_graphics_mode)
 
-      // Get the mouse position from the event
-      posx = event.getX
-      posy = event.getY
-    }
-  })
+  //Console mode
 
+  {
+    val board: Array[Array[Int]] = new Console_mode createBoard(r, c)
+    new Console_mode menu(board, turn, player)
 
-  menu(board, turn, player)
+    while (!gameOver) {
 
-  while (!gameOver) {
+      var temp: Int = 0
 
-    if (turn == 0 || turn % 2 == 0) {
-      //to play in the command line
-      //column = readInt()
-      column = readInt()
+        if (turn % 2 == 0) {
+          temp = readInt() - 1
+          while (temp < 0 || temp > 6) {
+            println(s"Not a valid number, try again $player !")
+            temp = readInt() - 1
+          }
+          column = temp
 
-      if (checkPos(board, column)) {
-        row = nextPos(board, column)
-        dropPiece(board, row, column, 1)
-        player = "Player 2"
+          if (checkPos(board, column)) {
+            row = nextPos(board, column)
+            new Console_mode dropPiece(board, row, column, 1)
+            player = "Player 2"
 
-        if (checkWin(board, 1, r, c)) {
-          player = "Player 1"
-          println(s"$player Wins !")
-          gameOver = true
+            if (checkWin(board, 1, r, c)) {
+              player = "Player 1"
+              println(s"$player wins !")
+              gameOver = true
+            }
+          }
         }
-      }
-    }
-    else {
-      //to play in the command line
-      column = readInt()
 
+        else {
+          temp = readInt() - 1
 
-      if (checkPos(board, column)) {
-        row = nextPos(board, column)
-        dropPiece(board, row, column, 2)
-        player = "Player 1"
+          while (temp < 0 || temp > 6) {
+            println(s"Not a valid number, try again $player !")
+            temp = readInt() - 1
+          }
+          column = temp
+          if (checkPos(board, column)) {
+            row = nextPos(board, column)
+            new Console_mode dropPiece(board, row, column, 2)
+            player = "Player 1"
 
-        if (checkWin(board, 2, r, c)) {
-          player = "Player 2"
-          println(s"$player Wins !")
-          gameOver = true
+            if (checkWin(board, 2, r, c)) {
+              player = "Player 2"
+              println(s"$player wins !")
+              gameOver = true
+            }
+          }
         }
-      }
-    }
-    if (!gameOver) {
-      turn += 1
-      menu(board, turn, player)
+        if (!gameOver) {
+          turn += 1
+          new Console_mode menu(board, turn, player)
+        }
     }
   }
 
+  else
 
+  //GUI mode
+
+  {
+    val w = new FunGraphics(700, 700, "Connect 4, 2023 By SJCG - ISC1")
+    var board: Array[Array[Int]]  = Array.empty
+    // boardStatus determines whether the array of the board is empty or not
+    var boardStatus: Boolean = false
+    var started: Boolean = false
+    new GUI_mode textTitle(w, player)
+    new GUI_mode textPressStart(w, 150, 400)
+
+
+    //Keyboard control
+
+    w.setKeyManager(new KeyAdapter() {
+      override def keyPressed(e: KeyEvent): Unit = {
+        ok = true
+        if (e.getKeyChar == '1' && boardStatus) column = 0
+        else if (e.getKeyChar == '2' && boardStatus) column = 1
+        else if (e.getKeyChar == '3' && boardStatus) column = 2
+        else if (e.getKeyChar == '4' && boardStatus) column = 3
+        else if (e.getKeyChar == '5' && boardStatus) column = 4
+        else if (e.getKeyChar == '6' && boardStatus) column = 5
+        else if (e.getKeyChar == '7' && boardStatus) column = 6
+        else if (e.getKeyChar == 's' && !started) {
+          started = true
+          gameOver = false
+          board = new GUI_mode createBoard(r, c, w)
+          boardStatus = true
+          new GUI_mode textPlayer(w, player)
+          ok = false
+        }
+        else if (e.getKeyChar == 'r' && started) {
+          turn = 0
+          gameOver = false
+          player = "Player 1"
+          board = new GUI_mode createBoard(r, c, w)
+          boardStatus = true
+          new GUI_mode textPlayer(w, player)
+          ok = false
+        }
+
+        else ok = false
+
+        //Game start
+
+        /*
+
+        If "while" is used AND is outside the "w.setKeyManager": write "Thread.sleep(10)" right after.
+        According to Mr. Mudry, since "while" is constantly turning, the CPU isn't fast enough to go back and read
+        the "keyManager".
+
+        */
+
+
+        if (ok && !gameOver) {
+          if (turn % 2 == 0) {
+            ok = false
+
+            //Player 1's turn
+
+            if (checkPos(board, column)) {
+              row = nextPos(board, column)
+              new GUI_mode dropPiece(board, row, column, 1, (column * 100) + 5, (row * 100) + 105, Color.blue, w)
+              player = "Player 2"
+              new GUI_mode textPlayer(w, player)
+              new GUI_mode textTurn (w, turn)
+              new GUI_mode textPressRestart(w)
+
+
+              if (checkWin(board, 1, r, c)) {
+                player = "Player 1"
+                new GUI_mode textWin(w, s"$player wins !")
+                gameOver = true
+              }
+            }
+          }
+          else if (turn == 41){
+            gameOver = true
+            new GUI_mode textTie(w)
+
+          }
+
+          else {
+            //Player 2's turn
+
+            ok = false
+
+            if (checkPos(board, column)) {
+              row = nextPos(board, column)
+              new GUI_mode dropPiece(board, row, column, 2, (column * 100) + 5, (row * 100) + 105, Color.red, w)
+              player = "Player 1"
+              new GUI_mode textPlayer(w, player)
+              new GUI_mode textTurn (w, turn)
+
+
+              if (checkWin(board, 2, r, c)) {
+                player = "Player 2"
+                new GUI_mode textWin(w, s"$player wins !")
+                gameOver = true
+              }
+            }
+          }
+
+          if (!gameOver) {
+            turn += 1
+
+            /*
+            To debug (check if the array is being filled) : new Console_mode menu(board, turn, player)
+             */
+
+          }
+        }
+      }
+    })
+  }
 }
-
-

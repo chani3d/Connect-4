@@ -1,3 +1,4 @@
+import hevs.graphics.FunGraphics
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -117,4 +118,24 @@ object Input {
     }
     res
   }
+
+  def readKey(w: FunGraphics): Int = {
+    var ok = false
+    var res = -1
+
+    while (!ok) {
+      try {
+        val stdin = new BufferedReader(new InputStreamReader(System.in))
+        val s = stdin.readLine
+        if (s.startsWith("0x") || s.startsWith("0X")) res = Integer.parseInt(s.substring(2), 16)
+        else res = Integer.parseInt(s, 10)
+        ok = true
+      } catch {
+        case ex: Exception =>
+          System.out.println("This is not a valid number. Try again")
+      }
+    }
+    res
+  }
+
 }
